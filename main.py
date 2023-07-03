@@ -18,6 +18,7 @@ if __name__ == "__main__":
         }
     ]
     temp_age = users[1]['age']
+    print(temp_age)
 
 
 
