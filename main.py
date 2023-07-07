@@ -38,13 +38,17 @@ if __name__ == "__main__":
     print(" Заборговані по Кредиту1: ", credit_one_count)
     print(" Заборговані по Кредиту2: ", credit_two_count)
     print(" Заборговані по Кредиту3: ", credit_three_count)
-
+    max_debt = 0
     for item in credit_data:
         total_debt = 0
         for credit in credit_data[item]:
             total_debt += credit_data[item][credit]
 
-        print(f"{item} --- {total_debt}")
+        if max_debt < total_debt:
+            max_debt = total_debt
+            user_max_debt = item
+
+    print(f"{user_max_debt} -- {max_debt}")
 
 # students = [
 #         {
