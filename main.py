@@ -1,6 +1,10 @@
 import json
 
 
+def helloWorld():
+    print('Hello world')
+
+
 def filterLetter(letter, data):
     filtered_arr = []
     for item in data:
@@ -18,6 +22,7 @@ if __name__ == "__main__":
     print(filterLetter("F", products))
     print(filterLetter("K", products))
     print(filterLetter("Ш", products))
+    helloWorld()
 
     # new_arr = []
     # for i in products:
