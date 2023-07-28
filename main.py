@@ -1,48 +1,80 @@
-def sumNumbers(numOne, numTwo):
-    sum = numOne + numTwo
-    return sum
+def pib(n, s, f):
+    pib = s + " " + n[0] + " " + f[0]
+    return pib
 
 
-def createIntials(name, last_name, fathers_name):
-    initials = False
-    try:
-        initials = f"{last_name.capitalize()} {name[0].upper()}. {fathers_name[0].upper()}."
-    except Exception as err:
-        print("Сталась помилка в створенні ініціалів!")
-    return initials
-
-def runProgram():
-    sumNumbers(1, 2)
-    intitials = createIntials("Ihor", "Lialiuk", "Roman")
-    if intitials:
-        print(intitials)
-    temperature = int(input("Введіть температуру:"))
-    if temperature > 0:
-        print("Teplo")
+def calc(num_one, num_two, operator):
+    if operator == "+":
+        return num_one + num_two
+    elif operator == "-":
+        return num_one - num_two
+    elif operator == "*":
+        return num_one * num_two
+    elif operator == "/":
+        try:
+            return num_one / num_two
+        except Exception as err:
+            return err
     else:
-        print("Cholodno")
+        return "Такий оператор не передбачено!"
 
 
 if __name__ == "__main__":
-    active = True
-    while active:
-        try:
-            runProgram()
-        except Exception as err:
-            print(err)
-        finally:
-            ch = input("Чи бажаєте продовжити користування (Y | N): ")
-            if ch.lower() == "n":
-                active = False
+    test = "hello world !"
+    print(test.capitalize())
+    print(test.title())
+    print(test.upper())
+    print(test.lower())
+    print(test.replace("h", "H"))
 
-    # try:
-    #     num = int("test")
-    #     print(num)
-    # except Exception as test:
-    #     try:
-    #         print(test)
-    #         print('Сталась помилка при розрахунку ціни')
-    #     except Exception as e:
-    #         print(e)
-    # finally:
-    #     print("Some text")
+    print(test[::-1])
+    print(test.split())
+    print(test.strip())
+
+    print(len(test.replace(" ", "").replace("!", "")))
+    print(test + " test")
+
+    # # int, float & complex
+    # int = 5
+    # float = 1.2
+    # complex = 12j
+    # a = False
+    #
+    # arr = [1, 3, 5]
+    #
+    # arr.append('test')
+    # # arr.pop()
+    # # arr.remove(5)
+    # cont = 0
+    # for item in arr:
+    #     print(item)
+    #     cont += 1
+    #
+    # for i in range(len(arr)):
+    #     print(i)
+    #     print(arr[i])
+
+    flag = 0
+    while flag <= 100:
+        print("test while")
+        flag += 10
+        print(flag)
+
+        if flag <= 100:
+            print(flag)
+            continue
+        else:
+            break
+
+    intials = pib("John", "Doe", "Patrick")
+    print(intials)
+
+    num_one = int(input("Введіть перше число: "))
+    num_two = int(input("Ведіть друге число: "))
+    operator = input("Оберіть оператор (+, -, *, /): ")
+
+    result = calc(num_one, num_two, operator)
+
+    print(result)
+
+    # print(arr)
