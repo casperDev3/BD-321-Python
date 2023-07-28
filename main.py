@@ -79,10 +79,33 @@ if __name__ == "__main__":
 
     # print(arr)
 
-    numb_arr = []
-    start_value = int(input("Start value: "))
-    end_value = int(input("End value: ")) + 1
-    for i in range(start_value, end_value):
-        if i % 3 == 0 and i % 5 == 0:
-            numb_arr.append(i)
-    print(numb_arr)
+    # numb_arr = []
+    # start_value = int(input("Start value: "))
+    # end_value = int(input("End value: ")) + 1
+    # for i in range(start_value, end_value):
+    #     if i % 3 == 0 and i % 5 == 0:
+    #         numb_arr.append(i)
+    # print(numb_arr)
+
+    star_value = int(input("Start: "))
+    end_value = int(input("Final: "))
+
+    simple_num = []
+    for i in range(star_value, end_value):
+        flag = True
+        for dil in range(star_value, end_value):
+            if dil != 1 and dil < i:
+                result = i % dil
+                if result == 0:
+                    flag = False
+                    break
+
+            if dil >= i:
+                break
+        if flag:
+            print(i)
+            simple_num.append(i)
+
+    print(simple_num)
+
+
