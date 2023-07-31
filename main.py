@@ -1,95 +1,12 @@
-def pib(n, s, f):
-    pib = s + " " + n[0] + " " + f[0]
-    return pib
+import telebot
+from telebot import types
+
+bot = telebot.TeleBot("6468608909:AAGfhXOmpWfW1fsvfD7PG6-YhESscYu9bR4")
+
+print("_____ START BOT ________")
 
 
-def calc(num_one, num_two, operator):
-    if operator == "+":
-        return num_one + num_two
-    elif operator == "-":
-        return num_one - num_two
-    elif operator == "*":
-        return num_one * num_two
-    elif operator == "/":
-        try:
-            return num_one / num_two
-        except Exception as err:
-            return err
-    else:
-        return "Такий оператор не передбачено!"
-
-
-if __name__ == "__main__":
-    # test = "hello world !"
-    # print(test.capitalize())
-    # print(test.title())
-    # print(test.upper())
-    # print(test.lower())
-    # print(test.replace("h", "H"))
-    #
-    # print(test[::-1])
-    # print(test.split())
-    # print(test.strip())
-    #
-    # print(len(test.replace(" ", "").replace("!", "")))
-    # print(test + " test")
-
-    # # int, float & complex
-    # int = 5
-    # float = 1.2
-    # complex = 12j
-    # a = False
-    #
-    # arr = [1, 3, 5]
-    #
-    # arr.append('test')
-    # # arr.pop()
-    # # arr.remove(5)
-    # cont = 0
-    # for item in arr:
-    #     print(item)
-    #     cont += 1
-    #
-    # for i in range(len(arr)):
-    #     print(i)
-    #     print(arr[i])
-
-    # flag = 0
-    # while flag <= 100:
-    #     print("test while")
-    #     flag += 10
-    #     print(flag)
-    #
-    #     if flag <= 100:
-    #         print(flag)
-    #         continue
-    #     else:
-    #         break
-    #
-    # intials = pib("John", "Doe", "Patrick")
-    # print(intials)
-    #
-    # num_one = int(input("Введіть перше число: "))
-    # num_two = int(input("Ведіть друге число: "))
-    # operator = input("Оберіть оператор (+, -, *, /): ")
-    #
-    # result = calc(num_one, num_two, operator)
-    #
-    # print(result)
-
-    # print(arr)
-
-    # numb_arr = []
-    # start_value = int(input("Start value: "))
-    # end_value = int(input("End value: ")) + 1
-    # for i in range(start_value, end_value):
-    #     if i % 3 == 0 and i % 5 == 0:
-    #         numb_arr.append(i)
-    # print(numb_arr)
-
-    star_value = int(input("Start: "))
-    end_value = int(input("Final: "))
-
+def simple_numbers(star_value, end_value):
     simple_num = []
     for i in range(star_value, end_value):
         flag = True
@@ -103,9 +20,41 @@ if __name__ == "__main__":
             if dil >= i:
                 break
         if flag:
-            print(i)
             simple_num.append(i)
+    return simple_num
 
-    print(simple_num)
+
+def main_reply_menu():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    # itembtn1 = types.KeyboardButton('a')
+    # itembtn2 = types.KeyboardButton('v')
+    # itembtn3 = types.KeyboardButton('d')
+    # markup.add(itembtn1, itembtn2, itembtn3)
+    markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("BTN 2"), types.KeyboardButton("BTN 3"))
+    markup.row(types.KeyboardButton("BTN 4"))
+    return markup
 
 
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(msg):
+    cid = msg.chat.id
+    bot.send_message(cid, "Hello!", reply_markup=main_reply_menu())
+    # bot.reply_to(message, "Howdy, how are you doing?")
+
+
+@bot.message_handler(func=lambda message: True)
+def echo_all(msg):
+    # bot.reply_to(message, message.text)
+    cid = msg.chat.id
+    if msg.text.lower() == "прості числа":
+        bot.send_message(cid, "hello world !!!")
+    elif msg.text == "🦆Прості числа":
+        numbers = simple_numbers(1, 100)
+        temp_text = "Список простих чисел: \n\n"
+        for num in numbers:
+            temp_text += f"{num} "
+
+        bot.send_message(cid, temp_text)
+
+
+bot.infinity_polling()
