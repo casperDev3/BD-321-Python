@@ -1,8 +1,8 @@
 import telebot
 from telebot import types
 
-bot = telebot.TeleBot("6468608909:AAGfhXOmpWfW1fsvfD7PG6-YhESscYu9bR4")
-
+bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ")
+users = {}
 print("_____ START BOT ________")
 
 
@@ -24,14 +24,33 @@ def simple_numbers(star_value, end_value):
     return simple_num
 
 
+def get_user_name(msg):
+    cid = msg.chat.id
+    txt = msg.text
+    users[f"{cid}"] = {}
+    users[f"{cid}"]["name"] = txt
+    mess = bot.send_message(cid, "Enter your age: ")
+    bot.register_next_step_handler(mess, get_user_age)
+
+
+def get_user_age(msg):
+    cid = msg.chat.id
+    txt = msg.text
+    users[f"{cid}"]["age"] = txt
+    print(users)
+    bot.send_message(cid, "Thanks!", reply_markup=main_reply_menu())
+
+
+### REPLY KEYBOARD
 def main_reply_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     # itembtn1 = types.KeyboardButton('a')
     # itembtn2 = types.KeyboardButton('v')
     # itembtn3 = types.KeyboardButton('d')
     # markup.add(itembtn1, itembtn2, itembtn3)
-    markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("💋SubMenu"), types.KeyboardButton("BTN 3"))
-    markup.row(types.KeyboardButton("BTN 4"))
+    markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("💋SubMenu"),
+               types.KeyboardButton("🙈Inline Menu"))
+    markup.row(types.KeyboardButton("/start"), types.KeyboardButton("📍Ask me?"))
     return markup
 
 
@@ -51,11 +70,32 @@ def r_sub_menu():
     return markup
 
 
+### INLINE KEYBOARD
+def i_test_menu():
+    kb = types.InlineKeyboardMarkup()
+    btn_one = types.InlineKeyboardButton("BTN ONE", callback_data="btn_one")
+    btn_course = types.InlineKeyboardButton("SHOW COURSE", callback_data="btn_course")
+    kb.row(btn_one, btn_one)
+    kb.row(btn_course)
+    return kb
+
+
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(msg):
     cid = msg.chat.id
     bot.send_message(cid, "Hello!", reply_markup=main_reply_menu())
     # bot.reply_to(message, "Howdy, how are you doing?")
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def inline_menu(call):
+    cid = call.message.chat.id
+    data = call.data
+    if data == "btn_one":
+        bot.send_message(cid, "Success inline key!", reply_markup=r_sub_menu())
+    elif data == "btn_course":
+        photo = open("img/barbie.webp", "rb")
+        bot.send_photo(cid, photo, caption="Good picture!")
 
 
 @bot.message_handler(func=lambda message: True)
@@ -74,6 +114,11 @@ def echo_all(msg):
         bot.send_message(cid, "💋", reply_markup=r_sub_menu())
     elif msg.text == "Назад":
         bot.send_message(cid, msg.text, reply_markup=main_reply_menu())
+    elif msg.text == "🙈Inline Menu":
+        bot.send_message(cid, "🙈", reply_markup=i_test_menu())
+    elif msg.text == "📍Ask me?":
+        mess = bot.send_message(cid, "Input your name: ")
+        bot.register_next_step_handler(mess, get_user_name)
 
 
 bot.infinity_polling()
