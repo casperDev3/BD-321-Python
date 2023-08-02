@@ -30,8 +30,24 @@ def main_reply_menu():
     # itembtn2 = types.KeyboardButton('v')
     # itembtn3 = types.KeyboardButton('d')
     # markup.add(itembtn1, itembtn2, itembtn3)
-    markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("BTN 2"), types.KeyboardButton("BTN 3"))
+    markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("💋SubMenu"), types.KeyboardButton("BTN 3"))
     markup.row(types.KeyboardButton("BTN 4"))
+    return markup
+
+
+def r_sub_menu():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn_one = types.KeyboardButton("BTN - 1")
+    btn_two = types.KeyboardButton("BTN - 2")
+    btn_three = types.KeyboardButton("BTN - 3")
+    btn_four = types.KeyboardButton("BTN - 4")
+    btn_five = types.KeyboardButton("BTN - 5")
+    btn_return = types.KeyboardButton("Назад")
+
+    markup.row(btn_one, btn_two, btn_three)
+    markup.row(btn_four, btn_five)
+    markup.row(btn_return)
+
     return markup
 
 
@@ -53,8 +69,11 @@ def echo_all(msg):
         temp_text = "Список простих чисел: \n\n"
         for num in numbers:
             temp_text += f"{num} "
-
         bot.send_message(cid, temp_text)
+    elif msg.text == "💋SubMenu":
+        bot.send_message(cid, "💋", reply_markup=r_sub_menu())
+    elif msg.text == "Назад":
+        bot.send_message(cid, msg.text, reply_markup=main_reply_menu())
 
 
 bot.infinity_polling()
