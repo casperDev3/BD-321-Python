@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 
-bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ")
+bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ", parse_mode="html")
 users = {}
 print("_____ START BOT ________")
 
@@ -107,7 +107,7 @@ def echo_all(msg):
         bot.send_message(cid, "hello world !!!")
     elif msg.text == "🦆Прості числа":
         numbers = simple_numbers(1, 100)
-        temp_text = "Список простих чисел: \n"
+        temp_text = "<b>Список простих чисел:</b> \n"
         for num in numbers:
             temp_text += f"{num} "
         bot.send_message(cid, temp_text)
