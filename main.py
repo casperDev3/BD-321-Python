@@ -37,8 +37,9 @@ def get_user_age(msg):
     cid = msg.chat.id
     txt = msg.text
     users[f"{cid}"]["age"] = txt
-    print(users)
-    bot.send_message(cid, "Thanks!", reply_markup=main_reply_menu())
+    msg_text = f'Name: {users[f"{cid}"]["name"]} \n' \
+               f'Age: {users[f"{cid}"]["age"]}'
+    bot.send_message(cid, msg_text, reply_markup=main_reply_menu())
 
 
 ### REPLY KEYBOARD
@@ -106,7 +107,7 @@ def echo_all(msg):
         bot.send_message(cid, "hello world !!!")
     elif msg.text == "🦆Прості числа":
         numbers = simple_numbers(1, 100)
-        temp_text = "Список простих чисел: \n\n"
+        temp_text = "Список простих чисел: \n"
         for num in numbers:
             temp_text += f"{num} "
         bot.send_message(cid, temp_text)
