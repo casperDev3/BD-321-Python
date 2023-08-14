@@ -1,7 +1,9 @@
 import telebot
 import requests
 from telebot import types
+import access
 
+admins = access.admins
 bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ", parse_mode="html")
 users = {}
 print("_____ START BOT ________")
@@ -95,6 +97,15 @@ def send_welcome(msg):
     cid = msg.chat.id
     bot.send_message(cid, "Hello!", reply_markup=main_reply_menu())
     # bot.reply_to(message, "Howdy, how are you doing?")
+
+
+@bot.message_handler(commands=['admin'])
+def send_welcome(msg):
+    cid = msg.chat.id
+    if cid in admins:
+        bot.send_message(cid, "Hello admin!")
+    else:
+        bot.send_message(cid, "У вас немає доступу до панелі адмінітсратора")
 
 
 @bot.callback_query_handler(func=lambda call: True)
