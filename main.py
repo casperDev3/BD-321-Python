@@ -1,4 +1,5 @@
 import telebot
+import requests
 from telebot import types
 
 bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ", parse_mode="html")
@@ -42,13 +43,21 @@ def get_user_age(msg):
     bot.send_message(cid, msg_text, reply_markup=main_reply_menu())
 
 
+def get_products():
+    baseURL = "https://fakestoreapi.com"
+    response = requests.get(f"{baseURL}/products")
+    data = response.json()
+    text = ""
+    for item in data:
+        text += f"{item['id']}. {item['title']} -- {item['price']}\n"
+
+    return text
+
+
 ### REPLY KEYBOARD
 def main_reply_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    # itembtn1 = types.KeyboardButton('a')
-    # itembtn2 = types.KeyboardButton('v')
-    # itembtn3 = types.KeyboardButton('d')
-    # markup.add(itembtn1, itembtn2, itembtn3)
+    markup.row(types.KeyboardButton("🦆Показати продукти"))
     markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("💋SubMenu"),
                types.KeyboardButton("🙈Inline Menu"))
     markup.row(types.KeyboardButton("/start"), types.KeyboardButton("📍Ask me?"))
@@ -120,6 +129,10 @@ def echo_all(msg):
     elif msg.text == "📍Ask me?":
         mess = bot.send_message(cid, "Input your name: ")
         bot.register_next_step_handler(mess, get_user_name)
+    elif msg.text == "🦆Показати продукти":
+        ##############
+        text = get_products()
+        bot.send_message(cid, text)
 
 
 bot.infinity_polling()
