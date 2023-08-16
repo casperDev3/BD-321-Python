@@ -8,6 +8,7 @@ bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ", parse_mo
 users = {}
 baseURL = "https://bank.gov.ua/NBUStatService/v1"
 currency_data = []
+converter_data = {}
 print("_____ START BOT ________")
 
 
@@ -66,6 +67,26 @@ def get_data_currency():
         currency_data.append(item)
 
 
+def set_choice_curr(msg):
+    converter_data['currency'] = msg.text
+    cid = msg.chat.id
+    mess = bot.send_message(cid, "Введіть суму, яку хочете обміняти: ")
+    bot.register_next_step_handler(mess, set_amount)
+
+
+def set_amount(msg):
+    converter_data['amount'] = msg.text
+    currency_obj = None
+    for item in currency_data:
+        if item['txt'] == converter_data['currency']:
+            currency_obj = item.copy()
+            break
+
+    result = float(converter_data['amount']) / float(currency_obj['rate'])
+    result = round(result, 2)
+
+    print(f"{result} {currency_obj['cc']}")
+
 
 ### REPLY KEYBOARD
 def main_reply_menu():
@@ -92,12 +113,21 @@ def r_sub_menu():
 
     return markup
 
+
 def r_converter():
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    # counter = 0
+    counter = 0
+    buttons = []
     for curr in currency_data:
-        kb.row(types.KeyboardButton(f"{curr['txt']}"))
+        counter += 1
+        btn = types.KeyboardButton(f"{curr['txt']}")
+        buttons.append(btn)
+        if counter == 2:
+            kb.row(buttons[0], buttons[1])
+            counter = 0
+            buttons = []
     return kb
+
 
 ### INLINE KEYBOARD
 def i_test_menu():
@@ -164,7 +194,8 @@ def echo_all(msg):
     elif msg.text == "🤑Конвертер":
         bot.send_message(cid, "🤑")
         get_data_currency()
-        bot.send_message(cid, "Оберіть валюту в котру бажаєте обміняти", reply_markup=r_converter())
+        mess = bot.send_message(cid, "Оберіть валюту в котру бажаєте обміняти", reply_markup=r_converter())
+        bot.register_next_step_handler(mess, set_choice_curr)
 
 
 bot.infinity_polling()
