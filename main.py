@@ -2,6 +2,7 @@ import telebot
 import requests
 from telebot import types
 import access
+import json
 
 admins = access.admins
 bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ", parse_mode="html")
@@ -10,6 +11,17 @@ baseURL = "https://bank.gov.ua/NBUStatService/v1"
 currency_data = []
 converter_data = {}
 print("_____ START BOT ________")
+
+
+def save_user(cid):
+    with open("users.json", 'r') as file:
+        users = json.load(file)
+
+    if cid not in users:
+        users.append(cid)
+
+    with open('users.json', 'w') as f:
+        json.dump(users, f)
 
 
 def simple_numbers(star_value, end_value):
@@ -94,7 +106,8 @@ def main_reply_menu():
     markup.row(types.KeyboardButton("🛒Показати продукти"), types.KeyboardButton("🤑Конвертер"))
     markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("💋SubMenu"),
                types.KeyboardButton("🙈Inline Menu"))
-    markup.row(types.KeyboardButton("/start"), types.KeyboardButton("📍Ask me?"))
+    markup.row(types.KeyboardButton("📍Ask me?"))
+    markup.row(types.KeyboardButton("/start"), types.KeyboardButton("/spam"))
     return markup
 
 
@@ -142,6 +155,7 @@ def i_test_menu():
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(msg):
     cid = msg.chat.id
+    save_user(cid)
     bot.send_message(cid, "Hello!", reply_markup=main_reply_menu())
     # bot.reply_to(message, "Howdy, how are you doing?")
 
@@ -153,6 +167,17 @@ def send_welcome(msg):
         bot.send_message(cid, "Hello admin!")
     else:
         bot.send_message(cid, "У вас немає доступу до панелі адмінітсратора")
+
+# @bot.message_handler(commands=['spam'])
+# def send_spam(msg):
+#     with open("users.json", 'r') as file:
+#         users = json.load(file)
+#
+#     for id in users:
+#         try:
+#             bot.send_message(id, "👋")
+#         except Exception as err:
+#             print(err)
 
 
 @bot.callback_query_handler(func=lambda call: True)
