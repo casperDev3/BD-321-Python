@@ -6,6 +6,8 @@ import access
 admins = access.admins
 bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ", parse_mode="html")
 users = {}
+baseURL = "https://bank.gov.ua/NBUStatService/v1"
+currency_data = []
 print("_____ START BOT ________")
 
 
@@ -56,10 +58,19 @@ def get_products():
     return text
 
 
+def get_data_currency():
+    LINK = f"{baseURL}/statdirectory/exchange?json"
+    RESPONSE = requests.get(LINK)
+    DATA = RESPONSE.json()
+    for item in DATA:
+        currency_data.append(item)
+
+
+
 ### REPLY KEYBOARD
 def main_reply_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.row(types.KeyboardButton("🦆Показати продукти"))
+    markup.row(types.KeyboardButton("🛒Показати продукти"), types.KeyboardButton("🤑Конвертер"))
     markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("💋SubMenu"),
                types.KeyboardButton("🙈Inline Menu"))
     markup.row(types.KeyboardButton("/start"), types.KeyboardButton("📍Ask me?"))
@@ -81,6 +92,12 @@ def r_sub_menu():
 
     return markup
 
+def r_converter():
+    kb = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    # counter = 0
+    for curr in currency_data:
+        kb.row(types.KeyboardButton(f"{curr['txt']}"))
+    return kb
 
 ### INLINE KEYBOARD
 def i_test_menu():
@@ -140,10 +157,14 @@ def echo_all(msg):
     elif msg.text == "📍Ask me?":
         mess = bot.send_message(cid, "Input your name: ")
         bot.register_next_step_handler(mess, get_user_name)
-    elif msg.text == "🦆Показати продукти":
+    elif msg.text == "🛒Показати продукти":
         ##############
         text = get_products()
         bot.send_message(cid, text)
+    elif msg.text == "🤑Конвертер":
+        bot.send_message(cid, "🤑")
+        get_data_currency()
+        bot.send_message(cid, "Оберіть валюту в котру бажаєте обміняти", reply_markup=r_converter())
 
 
 bot.infinity_polling()
