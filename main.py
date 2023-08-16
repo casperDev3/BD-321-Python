@@ -70,11 +70,12 @@ def get_data_currency():
 def set_choice_curr(msg):
     converter_data['currency'] = msg.text
     cid = msg.chat.id
-    mess = bot.send_message(cid, "Введіть суму, яку хочете обміняти: ")
+    mess = bot.send_message(cid, "Введіть суму, яку хочете обміняти: ", reply_markup=types.ReplyKeyboardRemove())
     bot.register_next_step_handler(mess, set_amount)
 
 
 def set_amount(msg):
+    cid = msg.chat.id
     converter_data['amount'] = msg.text
     currency_obj = None
     for item in currency_data:
@@ -84,8 +85,7 @@ def set_amount(msg):
 
     result = float(converter_data['amount']) / float(currency_obj['rate'])
     result = round(result, 2)
-
-    print(f"{result} {currency_obj['cc']}")
+    bot.send_message(cid, f"{result} {currency_obj['cc']}", reply_markup=main_reply_menu())
 
 
 ### REPLY KEYBOARD
