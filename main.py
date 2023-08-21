@@ -5,7 +5,7 @@ import access
 import json
 
 admins = access.admins
-bot = telebot.TeleBot("6468608909:AAFtgChc_0GtWV6O8vp_peoRUFaN5twTjPQ", parse_mode="html")
+bot = telebot.TeleBot("6412267729:AAHQa8ftvlDwQDYOxcf99eoW9Uxm4moBLTI", parse_mode="html")
 users = {}
 baseURL = "https://bank.gov.ua/NBUStatService/v1"
 currency_data = []
@@ -106,7 +106,7 @@ def main_reply_menu():
     markup.row(types.KeyboardButton("🛒Показати продукти"), types.KeyboardButton("🤑Конвертер"))
     markup.row(types.KeyboardButton("🦆Прості числа"), types.KeyboardButton("💋SubMenu"),
                types.KeyboardButton("🙈Inline Menu"))
-    markup.row(types.KeyboardButton("📍Ask me?"))
+    markup.row(types.KeyboardButton("📍Ask me?"), types.KeyboardButton("Send File"))
     markup.row(types.KeyboardButton("/start"), types.KeyboardButton("/spam"))
     return markup
 
@@ -168,8 +168,13 @@ def send_welcome(msg):
     else:
         bot.send_message(cid, "У вас немає доступу до панелі адмінітсратора")
 
-# @bot.message_handler(commands=['spam'])
-# def send_spam(msg):
+@bot.message_handler(commands=['spam'])
+def send_spam(msg):
+    try:
+        result = 1/0
+    except Exception as err:
+        for ad in admins:
+            bot.send_message(ad, "Сталась помилка в використанні команди /spam ", reply_markup=main_reply_menu())
 #     with open("users.json", 'r') as file:
 #         users = json.load(file)
 #
@@ -197,12 +202,18 @@ def echo_all(msg):
     cid = msg.chat.id
     if msg.text.lower() == "прості числа":
         bot.send_message(cid, "hello world !!!")
+    elif msg.text == "Send File":
+        file = open("data.xlsx", "rb")
+        bot.send_document(cid, file)
     elif msg.text == "🦆Прості числа":
         numbers = simple_numbers(1, 100)
         temp_text = "<b>Список простих чисел:</b> \n"
         for num in numbers:
             temp_text += f"{num} "
         bot.send_message(cid, temp_text)
+        print(msg)
+        msg_id = msg.message_id
+        bot.delete_message(cid, msg_id)
     elif msg.text == "💋SubMenu":
         bot.send_message(cid, "💋", reply_markup=r_sub_menu())
     elif msg.text == "Назад":
